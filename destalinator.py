@@ -181,8 +181,10 @@ class Destalinator(WithLogger, WithConfig):
         else:
             self.logger.debug("Would have archived #%s but it's not yet %s", channel_name, self.earliest_archive_date)
 
-    def safe_archive_all(self, days):  # TODO: No need to pass in days here
+    def safe_archive_all(self):
         """Safe archive all channels stale longer than `days`."""
+
+        days = self.config.archive_threshold
         self.action("Safe-archiving all channels stale for more than {} days".format(days))
         for channel in sorted(self.slacker.channels_by_name.keys()):
             if self.stale(channel, days):

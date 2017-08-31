@@ -474,8 +474,10 @@ class DestalinatorSafeArchiveAllTestCase(unittest.TestCase):
         self.destalinator = destalinator.Destalinator(mock_slacker, self.slackbot, activated=True)
         mock_slacker.channels_by_name = {'leninists': 'C012839', 'stalinists': 'C102843'}
         self.destalinator.stale = mock.MagicMock(return_value=False)
+        self.destalinator.safe_archive_all()
+
         days = self.destalinator.config.archive_threshold
-        self.destalinator.safe_archive_all(days)
+
         self.assertEqual(self.destalinator.stale.mock_calls, [mock.call('leninists', days), mock.call('stalinists', days)])
 
     @mock.patch('tests.test_destalinator.SlackerMock')
@@ -487,9 +489,8 @@ class DestalinatorSafeArchiveAllTestCase(unittest.TestCase):
             return {'leninists': True, 'stalinists': False}[channel]
 
         self.destalinator.stale = mock.MagicMock(side_effect=fake_stale)
-        days = self.destalinator.config.archive_threshold
         self.destalinator.safe_archive = mock.MagicMock()
-        self.destalinator.safe_archive_all(days)
+        self.destalinator.safe_archive_all()
         self.destalinator.safe_archive.assert_called_once_with('leninists')
 
     @mock.patch.object(get_config(), 'ignore_channels', ['leninists'])
@@ -504,7 +505,7 @@ class DestalinatorSafeArchiveAllTestCase(unittest.TestCase):
         self.destalinator.stale = mock.MagicMock(side_effect=fake_stale)
         mock_slacker.channel_has_only_restricted_members.return_value = False
         self.destalinator.earliest_archive_date = date.today()
-        self.destalinator.safe_archive_all(self.destalinator.config.archive_threshold)
+        self.destalinator.safe_archive_all()
         self.assertFalse(mock_slacker.archive.called)
 
 
