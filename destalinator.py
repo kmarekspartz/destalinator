@@ -220,8 +220,9 @@ class Destalinator(WithLogger, WithConfig):
 
         return True
 
-    def warn_all(self, days, force_warn=False):
+    def warn_all(self, force_warn=False):
         """Warn all channels which are `days` idle; if `force_warn`, will warn even if we already have."""
+        days = self.config.warn_threshold
         if not self.config.activated:
             self.logger.info("Note, destalinator is not activated and is in a dry-run mode. For help, see the "
                              "documentation on the DESTALINATOR_ACTIVATED environment variable.")
