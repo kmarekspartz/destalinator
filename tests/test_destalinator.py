@@ -291,36 +291,6 @@ class DestalinatorIgnoreChannelTestCase(unittest.TestCase):
 
 
 @mock.patch.object(get_config(), 'activated', True)
-class DestalinatorPostMarkedUpMessageTestCase(unittest.TestCase):
-    def setUp(self):
-        self.slacker = SlackerMock(token="token")
-        self.slackbot = slackbot.Slackbot(token="token")
-        self.destalinator = destalinator.Destalinator(self.slacker, self.slackbot)
-
-    def test_with_a_string_having_a_channel(self):
-        self.slacker.channels_by_name = {'leninists': 'C012839', 'stalinists': 'C102843'}
-        self.slacker.post_message = mock.MagicMock(return_value={})
-        self.destalinator.post_marked_up_message('stalinists', "Really great message about #leninists.")
-        self.slacker.post_message.assert_called_once_with('stalinists',
-                                                          "Really great message about <#C012839|leninists>.")
-
-    def test_with_a_string_having_many_channels(self):
-        self.slacker.channels_by_name = {'leninists': 'C012839', 'stalinists': 'C102843'}
-        self.slacker.post_message = mock.MagicMock(return_value={})
-        self.destalinator.post_marked_up_message('stalinists', "Really great message about #leninists and #stalinists.")
-        self.slacker.post_message.assert_called_once_with(
-            'stalinists',
-            "Really great message about <#C012839|leninists> and <#C102843|stalinists>."
-        )
-
-    def test_with_a_string_having_no_channels(self):
-        self.slacker.channels_by_name = {'leninists': 'C012839', 'stalinists': 'C102843'}
-        self.slacker.post_message = mock.MagicMock(return_value={})
-        self.destalinator.post_marked_up_message('stalinists', "Really great message.")
-        self.slacker.post_message.assert_called_once_with('stalinists', "Really great message.")
-
-
-@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorStaleTestCase(unittest.TestCase):
     def setUp(self):
         patcher = mock.patch('tests.test_destalinator.SlackerMock')
@@ -402,22 +372,6 @@ class DestalinatorArchiveTestCase(unittest.TestCase):
         self.slacker.archive.return_value = {'ok': True}
         self.destalinator.archive("stalinists")
         self.slacker.archive.assert_called_once_with('stalinists')
-
-
-@mock.patch.object(get_config(), 'activated', False)
-class DestalinatorDeactivatedArchiveTestCase(unittest.TestCase):
-    def setUp(self):
-        patcher = mock.patch('tests.test_destalinator.SlackerMock')
-        self.addCleanup(patcher.stop)
-        self.slacker = patcher.start()
-        self.slackbot = slackbot.Slackbot(token="token")
-        self.destalinator = destalinator.Destalinator(self.slacker, self.slackbot)
-
-    def test_skips_when_destalinator_not_activated(self):
-        self.assertFalse(get_config().activated)
-        self.slacker.post_message.return_value = {}
-        self.destalinator.archive("stalinists")
-        self.assertFalse(self.slacker.post_message.called)
 
 
 @mock.patch.object(get_config(), 'activated', True)
@@ -556,6 +510,52 @@ class DestalinatorWarnSlackerMockTestCase(unittest.TestCase):
         self.slacker.post_message.assert_called_with("stalinists",
                                                      self.destalinator.add_slack_channel_markup(warning_text),
                                                      message_type='channel_warning')
+
+
+@mock.patch.object(get_config(), 'activated', True)
+class DestalinatorPostMarkedUpMessageTestCase(unittest.TestCase):
+    def setUp(self):
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
+        self.destalinator = destalinator.Destalinator(self.slacker, self.slackbot)
+
+    def test_with_a_string_having_a_channel(self):
+        self.slacker.channels_by_name = {'leninists': 'C012839', 'stalinists': 'C102843'}
+        self.slacker.post_message = mock.MagicMock(return_value={})
+        self.destalinator.post_marked_up_message('stalinists', "Really great message about #leninists.")
+        self.slacker.post_message.assert_called_once_with('stalinists',
+                                                          "Really great message about <#C012839|leninists>.")
+
+    def test_with_a_string_having_many_channels(self):
+        self.slacker.channels_by_name = {'leninists': 'C012839', 'stalinists': 'C102843'}
+        self.slacker.post_message = mock.MagicMock(return_value={})
+        self.destalinator.post_marked_up_message('stalinists', "Really great message about #leninists and #stalinists.")
+        self.slacker.post_message.assert_called_once_with(
+            'stalinists',
+            "Really great message about <#C012839|leninists> and <#C102843|stalinists>."
+        )
+
+    def test_with_a_string_having_no_channels(self):
+        self.slacker.channels_by_name = {'leninists': 'C012839', 'stalinists': 'C102843'}
+        self.slacker.post_message = mock.MagicMock(return_value={})
+        self.destalinator.post_marked_up_message('stalinists', "Really great message.")
+        self.slacker.post_message.assert_called_once_with('stalinists', "Really great message.")
+
+
+@mock.patch.object(get_config(), 'activated', False)
+class DestalinatorDeactivatedArchiveTestCase(unittest.TestCase):
+    def setUp(self):
+        patcher = mock.patch('tests.test_destalinator.SlackerMock')
+        self.addCleanup(patcher.stop)
+        self.slacker = patcher.start()
+        self.slackbot = slackbot.Slackbot(token="token")
+        self.destalinator = destalinator.Destalinator(self.slacker, self.slackbot)
+
+    def test_skips_when_destalinator_not_activated(self):
+        self.assertFalse(get_config().activated)
+        self.slacker.post_message.return_value = {}
+        self.destalinator.archive("stalinists")
+        self.assertFalse(self.slacker.post_message.called)
 
 
 if __name__ == '__main__':
