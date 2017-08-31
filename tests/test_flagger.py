@@ -1,4 +1,3 @@
-import os
 import unittest
 import mock
 
@@ -6,8 +5,10 @@ import flagger
 import tests.fixtures as fixtures
 import tests.mocks as mocks
 
+from config import get_config
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+
+@mock.patch.object(get_config(), 'activated', True)
 class FlaggerFlagTest(unittest.TestCase):
     def setUp(self):
         slacker_obj = mocks.mocked_slacker_object(channels_list=fixtures.channels,

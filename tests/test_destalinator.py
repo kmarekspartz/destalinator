@@ -108,7 +108,7 @@ class SlackerMock(slacker.Slacker):
         pass
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorChannelMarkupTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -155,7 +155,7 @@ class DestalinatorChannelMarkupTestCase(unittest.TestCase):
         )
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorChannelMinimumAgeTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -184,7 +184,7 @@ target_archive_date = date.today() + timedelta(days=10)
 target_archive_date_string = target_archive_date.isoformat()
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorGetEarliestArchiveDateTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -211,7 +211,7 @@ class DestalinatorGetEarliestArchiveDateTestCase(unittest.TestCase):
         )
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorGetMessagesTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -247,7 +247,7 @@ class DestalinatorGetMessagesTestCase(unittest.TestCase):
         )
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorGetStaleChannelsTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -271,7 +271,7 @@ class DestalinatorGetStaleChannelsTestCase(unittest.TestCase):
         self.assertEqual(len(self.destalinator.get_stale_channels(30)), 2)
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorIgnoreChannelTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -305,7 +305,7 @@ class DestalinatorIgnoreChannelTestCase(unittest.TestCase):
         self.assertFalse(self.destalinator.ignore_channel('stalinists'))
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorPostMarkedUpMessageTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -337,7 +337,7 @@ class DestalinatorPostMarkedUpMessageTestCase(unittest.TestCase):
         self.slacker.post_message.assert_called_once_with('stalinists', "Really great message.")
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorStaleTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -382,7 +382,7 @@ class DestalinatorStaleTestCase(unittest.TestCase):
         self.assertFalse(self.destalinator.stale('stalinists', 30))
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorArchiveTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -397,15 +397,6 @@ class DestalinatorArchiveTestCase(unittest.TestCase):
         self.destalinator.archive("stalinists")
         self.assertFalse(mock_slacker.post_message.called)
 
-    @mock.patch.object(get_config(), 'activated', False)
-    @mock.patch('tests.test_destalinator.SlackerMock')
-    def test_skips_when_destalinator_not_activated(self, mock_slacker):
-        self.destalinator = destalinator.Destalinator(mock_slacker, self.slackbot)
-        mock_slacker.post_message.return_value = {}
-        self.destalinator.archive("stalinists")
-        self.assertFalse(mock_slacker.post_message.called)
-
-    @mock.patch.object(get_config(), 'activated', True)
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_announces_closure_with_closure_text(self, mock_slacker):
         self.destalinator = destalinator.Destalinator(mock_slacker, self.slackbot)
@@ -440,7 +431,22 @@ class DestalinatorArchiveTestCase(unittest.TestCase):
         mock_slacker.archive.assert_called_once_with('stalinists')
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', False)
+class DestalinatorDeactivatedArchiveTestCase(unittest.TestCase):
+    def setUp(self):
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
+
+    @mock.patch('tests.test_destalinator.SlackerMock')
+    def test_skips_when_destalinator_not_activated(self, mock_slacker):
+        self.assertFalse(get_config().activated)
+        self.destalinator = destalinator.Destalinator(mock_slacker, self.slackbot)
+        mock_slacker.post_message.return_value = {}
+        self.destalinator.archive("stalinists")
+        self.assertFalse(mock_slacker.post_message.called)
+
+
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorSafeArchiveTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -476,7 +482,7 @@ class DestalinatorSafeArchiveTestCase(unittest.TestCase):
         self.destalinator.archive.assert_called_once_with('stalinists')
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorSafeArchiveAllTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
@@ -522,7 +528,7 @@ class DestalinatorSafeArchiveAllTestCase(unittest.TestCase):
         self.assertFalse(mock_slacker.archive.called)
 
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+@mock.patch.object(get_config(), 'activated', True)
 class DestalinatorWarnTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")

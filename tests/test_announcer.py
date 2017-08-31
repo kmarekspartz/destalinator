@@ -1,15 +1,16 @@
-import os
 import time
 import unittest
 import mock
 
 import announcer
-from tests.test_destalinator import MockValidator
+from tests.test_destalinator import MockValidator  # TODO: why import this from here?
 import tests.fixtures as fixtures
 import tests.mocks as mocks
 
+from config import get_config
 
-@mock.patch.dict(os.environ, {'DESTALINATOR_ACTIVATED': 'true'})
+
+@mock.patch.object(get_config(), 'activated', True)
 class AnnouncerAnnounceTest(unittest.TestCase):
     def setUp(self):
         slacker_obj = mocks.mocked_slacker_object(channels_list=fixtures.channels, users_list=fixtures.users)
