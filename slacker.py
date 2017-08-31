@@ -12,13 +12,12 @@ from utils.with_logger import WithLogger
 
 class Slacker(WithLogger, WithConfig):
 
-    def __init__(self, slack_name, token, init=True):
+    def __init__(self, token=None, init=True):
         """
         slack name is the short name of the slack (preceding '.slack.com')
         token should be a Slack API Token.
         """
-        self.slack_name = slack_name
-        self.token = token
+        self.token = token or self.config.api_token  # not sb_token!
         assert self.token, "Token should not be blank"
         self.url = self.api_url()
         self.session = requests.Session()
@@ -121,7 +120,7 @@ class Slacker(WithLogger, WithConfig):
         return message
 
     def api_url(self):
-        return "https://{}.slack.com/api/".format(self.slack_name)
+        return "https://{}.slack.com/api/".format(self.config.slack_name)
 
     def get_channels(self, exclude_archived=True):
         """

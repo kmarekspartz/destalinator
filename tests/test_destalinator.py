@@ -110,8 +110,8 @@ class SlackerMock(slacker.Slacker):
 
 class DestalinatorChannelMarkupTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_add_slack_channel_markup(self, mock_slacker):
@@ -156,8 +156,8 @@ class DestalinatorChannelMarkupTestCase(unittest.TestCase):
 
 class DestalinatorChannelMinimumAgeTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_channel_is_old(self, mock_slacker):
@@ -184,8 +184,8 @@ target_archive_date_string = target_archive_date.isoformat()
 
 class DestalinatorGetEarliestArchiveDateTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     # TODO: This test (and others) would be redundant with solid testing around config directly.
     @mock.patch.dict(os.environ, {'DESTALINATOR_EARLIEST_ARCHIVE_DATE': target_archive_date_string})
@@ -210,8 +210,8 @@ class DestalinatorGetEarliestArchiveDateTestCase(unittest.TestCase):
 
 class DestalinatorGetMessagesTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_with_default_included_subtypes(self, mock_slacker):
@@ -245,8 +245,8 @@ class DestalinatorGetMessagesTestCase(unittest.TestCase):
 
 class DestalinatorGetStaleChannelsTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_with_no_stale_channels_but_all_minimum_age_with_default_ignore_users(self, mock_slacker):
@@ -268,8 +268,8 @@ class DestalinatorGetStaleChannelsTestCase(unittest.TestCase):
 
 class DestalinatorIgnoreChannelTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch.object(get_config(), 'ignore_channels', ['stalinists'])
     def test_with_explicit_ignore_channel(self):
@@ -301,8 +301,8 @@ class DestalinatorIgnoreChannelTestCase(unittest.TestCase):
 
 class DestalinatorPostMarkedUpMessageTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     def test_with_a_string_having_a_channel(self):
         self.destalinator = destalinator.Destalinator(self.slacker, self.slackbot, activated=True)
@@ -332,8 +332,8 @@ class DestalinatorPostMarkedUpMessageTestCase(unittest.TestCase):
 
 class DestalinatorStaleTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_with_all_sample_messages(self, mock_slacker):
@@ -376,8 +376,8 @@ class DestalinatorStaleTestCase(unittest.TestCase):
 
 class DestalinatorArchiveTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch.object(get_config(), 'ignore_channels', ['stalinists'])
     @mock.patch('tests.test_destalinator.SlackerMock')
@@ -431,8 +431,8 @@ class DestalinatorArchiveTestCase(unittest.TestCase):
 
 class DestalinatorSafeArchiveTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_skips_channel_with_only_restricted_users(self, mock_slacker):
@@ -466,8 +466,8 @@ class DestalinatorSafeArchiveTestCase(unittest.TestCase):
 
 class DestalinatorSafeArchiveAllTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_calls_stale_once_for_each_channel(self, mock_slacker):
@@ -511,8 +511,8 @@ class DestalinatorSafeArchiveAllTestCase(unittest.TestCase):
 
 class DestalinatorWarnTestCase(unittest.TestCase):
     def setUp(self):
-        self.slacker = SlackerMock("testing", "token")
-        self.slackbot = slackbot.Slackbot("testing", "token")
+        self.slacker = SlackerMock(token="token")
+        self.slackbot = slackbot.Slackbot(token="token")
 
     @mock.patch('tests.test_destalinator.SlackerMock')
     def test_warns_by_posting_message(self, mock_slacker):

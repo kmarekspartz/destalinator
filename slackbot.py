@@ -2,17 +2,18 @@
 
 import requests
 
+from config import WithConfig
 
-class Slackbot(object):
 
-    def __init__(self, slack_name, token):
-        self.slack_name = slack_name
-        self.token = token
+class Slackbot(WithConfig):
+
+    def __init__(self, token=None):
+        self.token = token or self.config.sb_token  # not api_token!
         assert self.token, "Token should not be blank"
         self.url = self.sb_url()
 
     def sb_url(self):
-        url = "https://{}.slack.com/".format(self.slack_name)
+        url = "https://{}.slack.com/".format(self.config.slack_name)
         url += "services/hooks/slackbot"
         return url
 
