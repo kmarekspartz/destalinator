@@ -19,7 +19,7 @@ class Destalinator(WithLogger, WithConfig):
     closure_text_fname = "closure.txt"
     warning_text_fname = "warning.txt"
 
-    def __init__(self, slacker, slackbot, activated):
+    def __init__(self, slacker, slackbot):
         """
         slacker is a Slacker() object
         slackbot should be an initialized slackbot.Slackbot() object
@@ -30,7 +30,6 @@ class Destalinator(WithLogger, WithConfig):
         self.slacker = slacker
         self.slackbot = slackbot
 
-        self.config.activated = activated
         self.logger.debug("activated is %s", self.config.activated)
 
         self.earliest_archive_date = self.get_earliest_archive_date()

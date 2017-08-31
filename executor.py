@@ -20,5 +20,4 @@ class Executor(WithLogger, WithConfig):
         self.slacker = slacker_injected or slacker.Slacker()
 
         self.ds = destalinator.Destalinator(slacker=self.slacker,
-                                            slackbot=self.slackbot,
-                                            activated=self.config.activated)
+                                            slackbot=self.slackbot)
