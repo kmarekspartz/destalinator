@@ -493,7 +493,7 @@ class DestalinatorWarnPatcherTestCase(unittest.TestCase):
 
 
 @mock.patch.object(get_config(), 'activated', True)
-class DestalinatorWarnSlackerMockTestCase(unittest.TestCase):
+class DestalinatorPostMarkedUpMessageTestCase(unittest.TestCase):
     def setUp(self):
         self.slacker = SlackerMock(token="token")
         self.slackbot = slackbot.Slackbot(token="token")
@@ -510,14 +510,6 @@ class DestalinatorWarnSlackerMockTestCase(unittest.TestCase):
         self.slacker.post_message.assert_called_with("stalinists",
                                                      self.destalinator.add_slack_channel_markup(warning_text),
                                                      message_type='channel_warning')
-
-
-@mock.patch.object(get_config(), 'activated', True)
-class DestalinatorPostMarkedUpMessageTestCase(unittest.TestCase):
-    def setUp(self):
-        self.slacker = SlackerMock(token="token")
-        self.slackbot = slackbot.Slackbot(token="token")
-        self.destalinator = destalinator.Destalinator(self.slacker, self.slackbot)
 
     def test_with_a_string_having_a_channel(self):
         self.slacker.channels_by_name = {'leninists': 'C012839', 'stalinists': 'C102843'}
